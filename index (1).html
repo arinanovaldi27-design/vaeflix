@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Jelajahi film terbuka legal dari Blender Foundation, temukan informasi resmi, dan simpan pilihan favoritmu.">
+<title>VAEFLIX — Temukan Film Favoritmu</title>
+<style>
+:root{--bg:#0c0d14;--panel:#151824;--panel2:#1d2130;--text:#f5f6fb;--muted:#a7adbf;--accent:#9b7cff;--line:#292e40}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5}
+a{color:inherit;text-decoration:none}button,input{font:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ff5a62;outline-offset:3px}.wrap{width:min(1120px,92%);margin:auto}
+header{position:sticky;top:0;z-index:5;background:#0c0d14ed;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-size:1.35rem;font-weight:850;letter-spacing:-.7px}.brand span{color:var(--accent)}
+nav{display:flex;gap:22px;color:var(--muted);font-size:.94rem}nav a:hover{color:white}
+.hero{padding:64px 0 42px;background:radial-gradient(ellipse at 80% 10%,#5539a344,transparent 42%),linear-gradient(120deg,#171629,#0c0d14 70%)}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}.eyebrow{color:#c1afff;text-transform:uppercase;letter-spacing:2px;font-size:.75rem;font-weight:800}
+h1{font-size:clamp(2.3rem,5vw,4.3rem);line-height:1.04;letter-spacing:-2px;margin:12px 0 16px}.hero p{color:var(--muted);max-width:570px;margin:0 0 24px}
+.search{display:flex;max-width:560px;background:white;border-radius:14px;padding:6px;gap:8px}.search input{min-width:0;flex:1;border:0;outline:0;padding:10px 12px;color:#171827;background:transparent}.search button,.primary{border:0;background:var(--accent);color:white;border-radius:10px;padding:11px 17px;font-weight:750;cursor:pointer}.hero-art{min-height:245px;border:1px solid #ffffff20;border-radius:24px;background:linear-gradient(145deg,#3d2c72,#171b2c 65%);display:grid;place-items:center;text-align:center;padding:24px;box-shadow:0 25px 70px #0006}.hero-art .symbol{font-size:5rem;filter:drop-shadow(0 12px 20px #0008)}.hero-art strong{display:block;font-size:1.2rem;margin-top:8px}.hero-art small{color:#d2c8f7}
+main{padding:34px 0 70px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}.section-head h2{font-size:1.55rem;margin:0}.section-head p{color:var(--muted);font-size:.9rem;margin:4px 0 0}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 24px}.chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:8px 14px;border-radius:99px;cursor:pointer}.chip.active,.chip:hover{background:#30264f;border-color:#8064d6;color:white}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.movie{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.2s}.movie:hover{transform:translateY(-4px);border-color:#62528f}.poster{height:225px;display:grid;place-items:center;font-size:4rem;position:relative;background:linear-gradient(145deg,var(--c1),var(--c2))}.poster:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(transparent,#0007)}.poster .emoji{z-index:1;filter:drop-shadow(0 8px 10px #0006)}.year{position:absolute;z-index:2;top:12px;left:12px;background:#090a10bb;padding:4px 9px;border-radius:20px;font-size:.75rem}
+.movie-info{padding:14px}.movie-info h3{margin:0 0 5px;font-size:1rem}.meta{color:var(--muted);font-size:.82rem}.movie-actions{display:flex;gap:8px;margin-top:13px}.movie-actions button{flex:1;border:1px solid var(--line);background:var(--panel2);color:white;border-radius:9px;padding:8px;cursor:pointer;font-size:.82rem}.movie-actions button:hover{border-color:var(--accent)}.empty{grid-column:1/-1;text-align:center;padding:45px 10px;color:var(--muted);background:var(--panel);border-radius:16px}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.85rem}.footer-inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.modal{position:fixed;inset:0;background:#000b;z-index:10;display:none;place-items:center;padding:18px}.modal.show{display:grid}.dialog{max-width:520px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;position:relative}.close{position:absolute;right:14px;top:12px;background:var(--panel2);color:white;border:0;border-radius:8px;padding:6px 10px;cursor:pointer}.dialog h2{margin:5px 35px 8px 0}.dialog p{color:var(--muted)}.dialog .primary{display:inline-block;margin-top:8px}
+
+.movie-video{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;margin:12px 0}
+.dialog .movie-video{max-height:55vh}
+
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.hero-grid{grid-template-columns:1fr}.hero-art{min-height:170px}.hero-art .symbol{font-size:3.5rem}}
+@media(max-width:520px){nav{gap:12px;font-size:.82rem}.nav{height:62px}.grid{grid-template-columns:1fr 1fr;gap:11px}.poster{height:165px;font-size:3rem}.movie-info{padding:11px}.movie-actions{flex-direction:column}.hero{padding-top:45px}.section-head{align-items:start;flex-direction:column}}
+
+
+/* Curated streaming home */
+.hero{min-height:500px;display:flex;align-items:center;background:
+ linear-gradient(90deg,#090909 0%,#090909ed 30%,#09090955 68%,#09090922 100%),
+ linear-gradient(0deg,#141414 0%,transparent 35%),
+ radial-gradient(ellipse at 78% 35%,#9d071c99,transparent 42%),
+ linear-gradient(120deg,#291018,#171014 60%,#4a111b)}
+.hero-grid{grid-template-columns:minmax(0,720px) 1fr}
+.hero-art{min-height:300px;max-width:360px;justify-self:end;background:linear-gradient(145deg,#710d1b,#171717 72%);border:1px solid #ffffff22}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 22px}
+.hero-play,.hero-more{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:4px;font-weight:800}
+.hero-play{background:#f5f5f5;color:#111}
+.hero-play:hover{background:#ddd}
+.hero-more{background:#555b;color:#fff}
+.hero-more:hover{background:#777b}
+.shelf-section{margin:0 0 32px}
+.shelf-section .section-head{margin-bottom:8px}
+.shelf-grid{margin:0}
+#film>.section-head{margin-top:32px}
+#movieGrid{min-height:80px}
+@media(max-width:850px){.hero{min-height:auto}.hero-grid{grid-template-columns:1fr}.hero-art{display:none}}
+@media(max-width:520px){.hero{padding:52px 0 45px}.hero-actions a{padding:10px 13px}}
+
+/* VAEFLIX cinematic streaming redesign */
+:root{--bg:#141414;--panel:#202020;--panel2:#2b2b2b;--text:#f5f5f5;--muted:#b3b3b3;--accent:#e50914;--line:#333}
+body{background:#141414;color:#f5f5f5}
+header{background:linear-gradient(180deg,#090909f5,#090909d9);border-bottom:0}
+.nav{height:76px}
+.brand{font-size:1.75rem;letter-spacing:-1px;color:#fff}
+.brand span{color:#e50914}
+nav{color:#e5e5e5;gap:24px}
+nav a:hover{color:#e50914}
+.hero{padding:84px 0 70px;background:
+ radial-gradient(ellipse at 78% 48%,#9d071c66,transparent 38%),
+ linear-gradient(90deg,#090909 0%,#171014 48%,#3a1018 100%);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#141414 0%,transparent 38%);pointer-events:none}
+.hero-grid{position:relative;z-index:1;grid-template-columns:1.15fr .85fr;gap:38px}
+.eyebrow{color:#ffb8bd;letter-spacing:2.4px}
+h1{font-size:clamp(2.7rem,6vw,5rem);letter-spacing:-2.5px;text-shadow:0 3px 18px #0009}
+.hero p{color:#e0dadd;font-size:1.05rem}
+.search{background:#242424;border:1px solid #555;border-radius:5px;padding:4px}
+.search input{color:#fff;background:transparent}
+.search input::placeholder{color:#aaa}
+.search button,.primary{background:#e50914;border-radius:4px}
+.search button:hover,.primary:hover{background:#b80710}
+.hero-art{min-height:300px;border:0;border-radius:8px;background:
+ linear-gradient(135deg,#410b18aa,#0b0b0bcc),
+ radial-gradient(circle at 50% 35%,#e50914,#321018 65%);box-shadow:0 24px 65px #000a}
+.hero-art .symbol{font-size:6rem}
+main{padding-top:28px}
+.section-head{margin-bottom:14px}
+.section-head h2{font-size:1.55rem;font-weight:750}
+.section-head p{color:#aaa}
+.filters{gap:8px;margin:16px 0 26px}
+.chip{background:#252525;border:1px solid #555;color:#eee;border-radius:4px;padding:7px 13px}
+.chip.active,.chip:hover{background:#e50914;border-color:#e50914;color:white}
+.grid{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;padding:6px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#555 #1a1a1a}
+.movie{flex:0 0 205px;scroll-snap-align:start;background:#202020;border:0;border-radius:5px;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease}
+.movie:hover{transform:scale(1.045);border:0;box-shadow:0 12px 28px #000b;z-index:2}
+.poster{height:285px;font-size:4.7rem}
+.poster:after{inset:35% 0 0}
+.year{background:#111d;border-radius:3px}
+.movie-info{padding:12px}
+.movie-info h3{font-size:.98rem}
+.meta{color:#bdbdbd}
+.movie-actions button{background:#303030;border:1px solid #555;border-radius:4px;color:#fff}
+.movie-actions button:hover{background:#e50914;border-color:#e50914}
+.empty{background:#202020;color:#bbb;border-radius:5px}
+#favorit{margin-top:44px!important}
+.admin-note,footer{color:#aaa}
+footer{border-color:#333}
+.modal{background:#000e}
+.dialog{background:#202020;border:1px solid #444;border-radius:7px}
+.close{background:#333;border-radius:4px}
+@media(max-width:850px){.hero-grid{grid-template-columns:1fr}.hero-art{min-height:190px}.hero-art .symbol{font-size:4rem}}
+@media(max-width:520px){
+      .nav{height:auto;min-height:64px;padding:10px 0;align-items:flex-start;flex-direction:column;gap:8px}
+      .brand{font-size:1.4rem}
+      nav{gap:14px;flex-wrap:wrap;font-size:.85rem}
+      .hero{padding:42px 0 42px}
+      .poster{height:220px}
+      .movie{flex-basis:158px}
+      .hero-art{min-height:150px}
+      .search{width:100%}
+      .search button{padding-inline:13px}
+    }
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><a class="brand" href="#" aria-label="VAEFLIX Beranda">VAE<span>FLIX</span></a><nav><a href="#film">Jelajahi Film</a><a href="#favorit">Favorit <span id="favCount">0</span></a></nav></div></header>
+<section class="hero"><div class="wrap hero-grid"><div><div class="eyebrow">SELAMAT DATANG DI VAEFLIX</div><h1>Film favoritmu.<br>Satu tempat.</h1><p>Temukan film terbuka yang dapat dibagikan secara legal, serta kunjungi sumber resmi untuk menonton dan melihat trailer.</p><div class="hero-actions"><a class="hero-play" href="#film">▶ Jelajahi Film</a><a class="hero-more" href="#trending">ⓘ Lihat koleksi</a></div><form class="search" id="searchForm"><input id="searchInput" type="search" placeholder="Cari judul film..." aria-label="Cari judul film"><button type="submit">Cari</button></form><p id="searchStatus" role="status" aria-live="polite" style="margin:8px 0 0;font-size:.88rem;color:#eee"></p></div><div class="hero-art"><div><div class="symbol">🍿</div><strong>Film terbuka pilihan</strong><small>Kurasi awal dengan lisensi yang jelas</small></div></div></div></section>
+<main class="wrap" id="film">
+<section class="shelf-section" id="trending"><div class="section-head"><div><h2>🔥 Sedang Populer</h2><p>Film terbuka pilihan dari Blender Foundation.</p></div></div><div class="grid shelf-grid" id="trendingGrid"></div></section>
+<section class="shelf-section"><div class="section-head"><div><h2>✨ Rekomendasi Untukmu</h2><p>Film dengan informasi dan sumber resmi.</p></div></div><div class="grid shelf-grid" id="recommendedGrid"></div></section>
+<section class="shelf-section"><div class="section-head"><div><h2>🆕 Film Terbaru</h2><p>Jelajahi koleksi film terbuka.</p></div></div><div class="grid shelf-grid" id="latestGrid"></div></section><div class="section-head" id="catalogResults"><div><h2>Jelajahi Film</h2><p>Katalog awal VAEFLIX: film terbuka berlisensi Creative Commons. Klik Detail untuk kredit dan sumber resmi.</p></div></div><div class="filters" id="filters"></div><p class="meta" style="margin:-12px 0 16px">Catatan: VAEFLIX belum meng-host video. Tombol sumber resmi akan membuka situs pemilik film. Lisensi dan kredit dicantumkan pada detail.</p><div class="grid" id="movieGrid"></div>
+<section id="favorit" style="margin-top:54px"><div class="section-head"><div><h2>Film Favorit</h2><p>Daftar film yang kamu simpan di perangkat ini.</p></div></div><div class="grid" id="favoriteGrid"></div></section></main>
+
+
+
+<footer><div class="wrap footer-inner"><span>© 2026 VAEFLIX</span><span>Kurasi awal film terbuka Blender Foundation · Kredit dan lisensi dicantumkan.</span></div></footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="dialog"><button class="close" id="closeModal" aria-label="Tutup">✕</button><div id="modalContent"></div></div></div>
+<script>
+const movies=[
+{id:1,title:"Big Buck Bunny",year:2008,genre:"Comedy",rating:"Film pendek",emoji:"🐰",desc:"Seekor kelinci besar yang ramah ingin menikmati hari dengan tenang, tetapi tiga hewan pengganggu membuat hutan menjadi kacau. Film animasi pendek dari Blender Foundation.",c1:"#7baf69",c2:"#234b37",license:"Creative Commons Attribution 3.0 (CC BY 3.0)",credit:"© copyright 2008, Blender Foundation / www.bigbuckbunny.org",official:"https://peach.blender.org/",trailer:"https://www.youtube.com/watch?v=YE7VzlLtp-4"},
+{id:2,title:"Sintel",year:2010,genre:"Fantasy",rating:"Film pendek",emoji:"🐉",desc:"Seorang gadis bernama Sintel melakukan perjalanan berbahaya untuk mencari naga kecil yang pernah menjadi sahabatnya. Film fantasi pendek dari Blender Foundation.",c1:"#6b91b5",c2:"#25334f",license:"Creative Commons Attribution 3.0 (CC BY 3.0)",credit:"© copyright Blender Foundation / durian.blender.org",official:"https://durian.blender.org/",trailer:"https://www.youtube.com/watch?v=eRsGyueVLvQ"},
+{id:3,title:"Tears of Steel",year:2012,genre:"Sci-Fi",rating:"Film pendek",emoji:"🤖",desc:"Di Amsterdam, sekelompok pejuang dan ilmuwan menjalankan rencana berisiko untuk menyelamatkan dunia dari ancaman robot. Film pendek fiksi ilmiah dengan efek visual dari Blender Institute.",c1:"#9a5c55",c2:"#292b3c",license:"Creative Commons Attribution 3.0 (CC BY 3.0)",credit:"© Blender Foundation / mango.blender.org",official:"https://mango.blender.org/",trailer:"https://www.youtube.com/watch?v=OHOpb2fS-cM"}
+];
+const genres=["Semua","Comedy","Fantasy","Sci-Fi"];
+let activeGenre="Semua",query="",favorites=[];
+try {
+  const storedFavorites = JSON.parse(localStorage.getItem("vaeflix-favorites") || "[]");
+  favorites = Array.isArray(storedFavorites) ? storedFavorites : [];
+} catch (error) {
+  favorites = [];
+}
+
+const grid=document.getElementById("movieGrid"),favGrid=document.getElementById("favoriteGrid");
+function card(m){return `<article class="movie"><div class="poster" style="--c1:${m.c1||"#40366b"};--c2:${m.c2||"#15182a"}"><span class="year">${m.year}</span><span class="emoji">${m.emoji||"🎞️"}</span></div><div class="movie-info"><h3>${escapeHTML(m.title)}</h3><div class="meta">${escapeHTML(m.genre)} · ${escapeHTML(m.rating)}</div><div class="movie-actions"><button onclick="details(${m.id})">Detail & kredit</button><button onclick="toggleFav(${m.id})">${favorites.includes(m.id)?"♥ Tersimpan":"♡ Favorit"}</button></div></div></article>`}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderShelves(){
+ const list=movies;
+ const rated=[...list].sort((a,b)=>Number(b.rating)-Number(a.rating)).slice(0,6);
+ const latest=[...list].sort((a,b)=>(b.year||0)-(a.year||0)).slice(0,6);
+ const preferred=list.filter(m=>favorites.includes(m.id));
+ const recommended=[...preferred,...rated.filter(m=>!preferred.some(p=>p.id===m.id))].slice(0,6);
+ document.getElementById("trendingGrid").innerHTML=rated.map(card).join("");
+ document.getElementById("recommendedGrid").innerHTML=recommended.map(card).join("");
+ document.getElementById("latestGrid").innerHTML=latest.map(card).join("");
+}
+function render(){const list=movies;document.querySelectorAll(".shelf-section").forEach(el=>el.hidden=Boolean(query));const shown=list.filter(m=>(activeGenre==="Semua"||m.genre===activeGenre)&&(m.title+" "+m.desc).toLowerCase().includes(query));grid.innerHTML=shown.length?shown.map(card).join(""):'<div class="empty">Film tidak ditemukan. Coba kata kunci atau genre lain.</div>';const saved=movies.filter(m=>favorites.includes(m.id));favGrid.innerHTML=saved.length?saved.map(card).join(""):'<div class="empty">Belum ada film favorit. Tekan tombol ♡ pada film yang kamu suka.</div>';document.getElementById("favCount").textContent=favorites.length;renderShelves()}
+function renderFilters(){document.getElementById("filters").innerHTML=genres.map(g=>`<button class="chip ${g===activeGenre?"active":""}" onclick="setGenre('${g}')">${g}</button>`).join("")}
+function setGenre(g){activeGenre=g;renderFilters();render()}
+function toggleFav(id){favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];localStorage.setItem("vaeflix-favorites",JSON.stringify(favorites));render()}
+function showModal(html){document.getElementById("modalContent").innerHTML=html;document.getElementById("modal").classList.add("show")}
+function details(id){
+ const m=movies.find(x=>x.id===id);
+ showModal(`<div style="font-size:3rem">${m.emoji}</div><div class="meta">${m.year} · ${escapeHTML(m.genre)} · ${escapeHTML(m.rating)}</div><h2 id="modalTitle">${escapeHTML(m.title)}</h2><p>${escapeHTML(m.desc)}</p><p><strong>Lisensi:</strong> ${escapeHTML(m.license)}</p><p class="meta"><strong>Kredit:</strong> ${escapeHTML(m.credit)}</p><p class="meta">VAEFLIX menautkan pengunjung ke situs proyek resmi. Tautan ini bukan pemutar video yang di-host oleh VAEFLIX.</p><p><a class="primary" href="${m.official}" target="_blank" rel="noopener noreferrer">Situs resmi / tonton</a> <a class="hero-more" href="${m.trailer}" target="_blank" rel="noopener noreferrer">Tonton resmi di YouTube</a></p><button class="primary" onclick="toggleFav(${m.id});details(${m.id})">${favorites.includes(m.id)?"Hapus dari favorit":"Simpan ke favorit"}</button>`);
+}
+document.getElementById("searchForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const rawQuery=document.getElementById("searchInput").value.trim();
+ query=rawQuery.toLowerCase();
+ render();
+ const matches=movies.filter(m=>(activeGenre==="Semua"||m.genre===activeGenre)&&(m.title+" "+m.desc).toLowerCase().includes(query));
+ document.getElementById("searchStatus").textContent=query ? (matches.length ? `Ditemukan ${matches.length} hasil untuk “${rawQuery}”. Hasil ditampilkan di bagian Jelajahi Film.` : `Tidak ada hasil untuk “${rawQuery}”. Coba kata kunci lain.`) : "Pencarian dikosongkan. Menampilkan semua film contoh.";
+ document.getElementById("catalogResults").scrollIntoView({behavior:"smooth",block:"start"});
+});
+document.getElementById("closeModal").onclick=closeModal;
+function closeModal(){const modal=document.getElementById("modal"),url=modal.dataset.videoUrl;if(url)URL.revokeObjectURL(url);modal.dataset.videoUrl="";modal.classList.remove("show");document.getElementById("modalContent").innerHTML=""}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && document.getElementById("modal").classList.contains("show")) closeModal();
+});
+renderFilters();render();
+</script>
+</body></html>
